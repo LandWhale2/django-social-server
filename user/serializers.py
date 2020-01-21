@@ -61,3 +61,10 @@ class UserSerializer(serializers.ModelSerializer):
 #     model = UserPhoto
 #     fields = '__all__'
 #     depth = 2
+
+
+class StoryLikeSerializer(serializers.ModelSerializer):
+
+  class Meta:
+    model = User
+    fields = ('nickname', 'image1',)

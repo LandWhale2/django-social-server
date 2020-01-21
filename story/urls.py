@@ -1,11 +1,10 @@
 from django.urls import path
-from story import views
+from . import views
 from rest_framework.urlpatterns import format_suffix_patterns
-
-
+from . import views
 
 urlpatterns = [
-    path('story', views.StoryViewset, name='storys'),
+    path('like', views.like),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
