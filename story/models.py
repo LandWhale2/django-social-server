@@ -1,5 +1,6 @@
 from django.db import models
 from user.models import User
+# from user.models import User
 
 # Create your models here.
 
@@ -23,8 +24,7 @@ class Story(models.Model):
     likes = models.ManyToManyField(User, blank=True,null= True ,related_name='likes')
     
     class Meta:
-        abstract = True
-        ordering = ['-id']
+        ordering = ['-created']
     
     @property
     def total_likes(self):
@@ -32,9 +32,3 @@ class Story(models.Model):
 
 
 
-
-class ETC(models.Model):
-    created = models.DateTimeField(auto_now_add= True)
-
-    class Meta:
-        abstract = True
