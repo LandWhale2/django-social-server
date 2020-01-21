@@ -1,15 +1,19 @@
 from rest_framework import serializers
-from .models import User, UserPhoto
+from .models import User
+
 
 
 class UserSerializer(serializers.ModelSerializer):
     # created_by = serializers.CharField(max_length=64, required=False)
     # updated_by = serializers.CharField(max_length=64, required=False)
     email = serializers.EmailField()
+    image1 = serializers.ImageField(use_url = True, required=False)
+    
 
     class Meta:
         model = User
         fields = '__all__'
+        # extra_kwargs = ['photos']
 
     def to_internal_value(self, data):
         #POST/PUT 과 같이 데이터변경이있을떄 데이터 저장하기 전에 핸들링 가능한 함수
@@ -41,19 +45,19 @@ class UserSerializer(serializers.ModelSerializer):
         #데이터 저장할때 필요한 과정을 구현합니다
         user = User.objects.create(
             email = validate_data['email'],
-            password = validate_data['password'],
-            nickname = validate_data['nickname'],
+            token = validate_data['token'],
         )
         
         
-        user.active = False
+        user.active = True
         user.save()
 
         return validate_data
 
 
-class UserPhotoSerializer(serializers.ModelSerializer):
+# class UserPhotoSerializer(serializers.ModelSerializer):
 
-  class Meta:
-    model = UserPhoto
-    fields = '__all__'
+#   class Meta:
+#     model = UserPhoto
+#     fields = '__all__'
+#     depth = 2
