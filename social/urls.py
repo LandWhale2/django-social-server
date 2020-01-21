@@ -20,9 +20,10 @@ from story import urls
 from django.conf.urls import url,include
 from django.conf.urls.static import static
 from django.conf import settings
+from story.router import router
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('user.urls')),
-    path('api/', include('story.urls')),
+    path('api/', include(router.urls)),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
