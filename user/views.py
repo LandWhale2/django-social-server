@@ -24,3 +24,13 @@ class UserViewSet(viewsets.ModelViewSet):
 # class UserPhotoViewSet(viewsets.ModelViewSet):
 #     queryset = UserPhoto.objects.all().order_by('date_added')
 #     serializer_class = UserPhotoSerializer
+
+
+
+# def delete(self, *args, **kwargs):
+#     # You have to prepare what you need before delete the model
+#     storage, path = self.image.storage, self.image.path
+#     # Delete the model before the file
+#     super(Profile, self).delete(*args, **kwargs)
+#     # Delete the file after the model
+#     storage.delete(path)

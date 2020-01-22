@@ -27,4 +27,5 @@ urlpatterns = [
     path('auth/', include('user.urls')),
     path('api/', include(router.urls)),
     path('storylike/', include('story.urls')),
+    path('chat/', include('chat.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
