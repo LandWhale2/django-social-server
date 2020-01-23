@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from . import models
 from user.serializers import UserSerializer, StoryLikeSerializer
-
+from django.views.decorators.csrf import csrf_exempt
 
 
 class StorySerializer(serializers.HyperlinkedModelSerializer):
@@ -11,3 +11,14 @@ class StorySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Story
         fields = ('content','image', 'created', 'email', 'id', 'likes',)
+
+
+
+
+
+# @csrf_exempt
+class TestModelSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.TestModel
+        fields = '__all__'

@@ -40,3 +40,10 @@ def like(request):
 
     context = {'like_count' : story.total_likes, 'message': message}
     return HttpResponse(json.dumps(context), content_type='application/json')
+
+
+
+# @csrf_exempt
+class TestModelViewset(viewsets.ModelViewSet):
+    queryset = models.TestModel.objects.all()
+    serializer_class = serializers.TestModelSerializer

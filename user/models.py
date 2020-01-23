@@ -67,9 +67,48 @@ class User(models.Model):
     hobby = ArrayField(models.CharField(max_length=200), blank=True, null=True)
     height = models.IntegerField(null=True, blank=True)
     birth = models.IntegerField(null=True, blank=True)
-    like = models.IntegerField(null=True, blank=True)
-    hate = models.IntegerField(null=True, blank=True)
+    relations = models.ManyToManyField(
+        'self',
+        # 비대칭 적용
+        symmetrical=False,
+        # 중개 모델 적용
+        through='Relation',
+        # 역참조를 없앰
+        related_name='+'
+    )
     image1 = models.ImageField(null= True, blank = True, upload_to = user_path)
+
+
+
+class Relation(models.Model):
+    RELATION_TYPE_LIKE = 'l'
+    RELATION_TYPE_BLOCK = 'b'
+    RELATION_TYPE_HATE = 'h'
+    CHOICES_TYPE = (
+        (RELATION_TYPE_LIKE, '좋아요'),
+        (RELATION_TYPE_BLOCK, '차단'),
+        (RELATION_TYPE_HATE, '싫어요'),
+    )
+    from_user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        null = True,
+        related_name='relations_by_from_user',
+    )
+    relation_type = models.CharField(max_length=1, choices=CHOICES_TYPE, blank=True)
+    to_user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        null = True,
+        related_name='relations_by_to_user',
+    )
+    class Meta:
+        ordering = ['-relation_type']
+
+
+
+
+
 
 
 

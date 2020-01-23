@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, Relation
 
 
 
@@ -68,3 +68,13 @@ class StoryLikeSerializer(serializers.ModelSerializer):
   class Meta:
     model = User
     fields = ('nickname', 'image1',)
+
+
+class RelationSerializer(serializers.ModelSerializer):
+
+  class Meta:
+    model = Relation
+    fields = '__all__'
+
+
+

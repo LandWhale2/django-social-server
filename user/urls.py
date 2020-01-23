@@ -7,11 +7,13 @@ from rest_framework import routers
 app_name = 'user'
 
 router = routers.SimpleRouter()
-router.register(r'user', views.UserViewSet)    
+router.register(r'user', views.UserViewSet)
+router.register(r'relation', views.RelationViewSet)
 # router.register(r'user-photo', views.UserPhotoViewSet)
 
 urlpatterns = [
     path('signup', views.SignUp.as_view(), name='signup'),
+    # path('relation', views.RelationViewSet, name='relations'),
     url(r'^', include(router.urls)),
 ]
 

@@ -1,5 +1,6 @@
 from django.db import models
 from user.models import User
+from django.views.decorators.csrf import csrf_exempt
 # from user.models import User
 
 # Create your models here.
@@ -33,3 +34,11 @@ class Story(models.Model):
 
 
 
+# @csrf_exempt
+class TestModel(models.Model):
+    created = models.DateTimeField(auto_now_add= True)
+    content = models.CharField(max_length = 255, null = True)
+    
+    class Meta:
+        ordering = ['-created']
+   
