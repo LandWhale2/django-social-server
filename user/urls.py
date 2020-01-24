@@ -8,11 +8,14 @@ app_name = 'user'
 
 router = routers.SimpleRouter()
 router.register(r'user', views.UserViewSet)
-router.register(r'relation', views.RelationViewSet)
+router.register(r'relations', views.RelationViewSet)
+# router.register(r'relation', views.relation_list, basename='relations')
 # router.register(r'user-photo', views.UserPhotoViewSet)
 
 urlpatterns = [
     path('signup', views.SignUp.as_view(), name='signup'),
+    path('relation/<int:to_user>/<str:relation_type>', views.relation_list, name='relations-list'),
+    path('relation', views.relation_list, name='relations'),
     # path('relation', views.RelationViewSet, name='relations'),
     url(r'^', include(router.urls)),
 ]

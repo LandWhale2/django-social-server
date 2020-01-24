@@ -43,7 +43,6 @@ def like(request):
 
 
 
-# @csrf_exempt
 class TestModelViewset(viewsets.ModelViewSet):
     queryset = models.TestModel.objects.all()
     serializer_class = serializers.TestModelSerializer

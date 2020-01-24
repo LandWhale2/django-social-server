@@ -29,6 +29,25 @@ class RelationViewSet(viewsets.ModelViewSet):
     serializer_class = RelationSerializer
 
 
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.parsers import JSONParser
+from django.http.response import JsonResponse
+
+@csrf_exempt
+def relation_list(request, to_user=None, relation_type=None):
+    if request.method == 'GET':
+        relation_user_list = Relation.objects.filter(relation_type=relation_type, to_user= to_user)
+        serializer = RelationSerializer(relation_user_list, many=True, context={'request': request})
+        return JsonResponse(serializer.data, safe=False)
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = RelationSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
+
 
 
 # from django.views.decorators.http import require_POST
@@ -42,10 +61,16 @@ class RelationViewSet(viewsets.ModelViewSet):
 
 
 
+
+
+
+
+
 # @require_POST
 # @csrf_exempt
-# def Relations(request):
+# def like(request):
 #     if request.method == 'POST':
+
 #         ds = json.loads(request.body)
 #         from_user = ds['from_user']
 #         to_user = ds['to_user']
@@ -64,16 +89,17 @@ class RelationViewSet(viewsets.ModelViewSet):
 #             message = '알 수 없는 입력'
         
 #         print('aaaaaa')
-        
-
 #     context = {'like_count' : 'dd', 'message': message}
 #     response = HttpResponse(json.dumps(context), content_type='application/json')
 #     return response
 
 
-# class UserPhotoViewSet(viewsets.ModelViewSet):
-#     queryset = UserPhoto.objects.all().order_by('date_added')
-#     serializer_class = UserPhotoSerializer
+
+
+
+
+
+
 
 
 

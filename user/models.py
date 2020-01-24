@@ -78,6 +78,25 @@ class User(models.Model):
     )
     image1 = models.ImageField(null= True, blank = True, upload_to = user_path)
 
+    @property
+    def mylikelist(self):
+        """
+        내가 좋아하고 있는 User목록 가져옴
+        """
+        like_relations = self.relations_by_from_user.filter(
+            type=Relation.RELATION_TYPE_LIKE,
+        )
+        # 위에서 정제한 쿼리셋에서 'pk'값만 리스트로 가져옴( 내가 좋아하는 유저의 pk리스트)
+        like_pk_list = like_relations.values_list('to_user', flat=True)
+
+        # User테이블에서 pk가 like_pk_list에 포함되는 User목록을
+        # like_users변수로 할당
+        like_users = User.objects.filter(pk__in=like_pk_list)
+        return like_users
+        
+    
+    
+
 
 
 class Relation(models.Model):
