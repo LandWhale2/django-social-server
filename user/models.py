@@ -48,6 +48,10 @@ def user_path(instance, filename): #파라미터 instance는 Photo 모델을 의
 
 
 
+def rating_save():
+    return 3
+
+
 
 class User(models.Model):
     class Meta:
@@ -77,6 +81,22 @@ class User(models.Model):
         related_name='+'
     )
     image1 = models.ImageField(null= True, blank = True, upload_to = user_path)
+    rating = models.ImageField(default= rating_save)
+
+    @property
+    def like_rating(self):
+        like_count = self.relations_by_to_user.filter(
+            relation_type=Relation.RELATION_TYPE_LIKE,
+        ).count()
+        hate_count = self.relations_by_to_user.filter(
+            relation_type=Relation.RELATION_TYPE_HATE,
+        ).count()
+
+        total_count = like_count + hate_count
+
+        rating = like_count / total_count * 100
+        # total_count = like_count+hate_count
+        return rating
 
     @property
     def mylikelist(self):

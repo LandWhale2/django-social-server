@@ -32,10 +32,14 @@ class RelationViewSet(viewsets.ModelViewSet):
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
+from django.db.models import Avg, Max
 
 @csrf_exempt
 def relation_list(request, to_user=None, relation_type=None):
     if request.method == 'GET':
+        user = User.objects.get(pk = to_user)
+        print(user)
+        print(user.like_rating)
         relation_user_list = Relation.objects.filter(relation_type=relation_type, to_user= to_user)
         serializer = RelationSerializer(relation_user_list, many=True, context={'request': request})
         return JsonResponse(serializer.data, safe=False)
