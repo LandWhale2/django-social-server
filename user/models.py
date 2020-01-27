@@ -81,7 +81,7 @@ class User(models.Model):
         related_name='+'
     )
     image1 = models.ImageField(null= True, blank = True, upload_to = user_path)
-    rating = models.ImageField(default= rating_save)
+    rating = models.IntegerField(null=True, blank=True)
 
     @property
     def like_rating(self):
@@ -93,8 +93,11 @@ class User(models.Model):
         ).count()
 
         total_count = like_count + hate_count
-
-        rating = like_count / total_count * 100
+        if total_count >= 10:
+            rating = like_count / total_count * 100
+        else:
+            rating = 0
+        
         # total_count = like_count+hate_count
         return rating
 
@@ -141,8 +144,12 @@ class Relation(models.Model):
         null = True,
         related_name='relations_by_to_user',
     )
+
+
     class Meta:
         ordering = ['-relation_type']
+    
+
 
 
 

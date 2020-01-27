@@ -45,6 +45,9 @@ def relation_list(request, to_user=None, relation_type=None):
         return JsonResponse(serializer.data, safe=False)
     elif request.method == 'POST':
         data = JSONParser().parse(request)
+        user = User.objects.get(pk=data['to_user'])
+        user.rating = user.like_rating
+        user.save()
         serializer = RelationSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
