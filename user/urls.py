@@ -16,6 +16,7 @@ urlpatterns = [
     path('signup', views.SignUp.as_view(), name='signup'),
     path('relation/<int:to_user>/<str:relation_type>', views.relation_list, name='relations-list'),
     path('relation', views.relation_list, name='relations'),
+    path('toprating', views.get_top_rating, name='toprating'),
     # path('relation', views.RelationViewSet, name='relations'),
     url(r'^', include(router.urls)),
 ]

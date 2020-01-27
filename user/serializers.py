@@ -78,3 +78,8 @@ class RelationSerializer(serializers.ModelSerializer):
 
 
 
+class UserProfileSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        exclude = ('email','token',)
