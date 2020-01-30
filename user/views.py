@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status, permissions
 from .models import User, Relation, PersonType
 from rest_framework import viewsets
+from datetime import date
 
 
 
@@ -99,8 +100,14 @@ def get_matching_type(request, user_id=None):
     if request.method == 'GET':
         user_type = PersonType.objects.get(user=user_id)
         user = User.objects.get(pk = user_id)
+        print(user.birthday)
+        print(user.age)
+        age =date.today()-user.birthday
+        print(age.days/365.25)
         print(user_type.bodytype_type)
         get_user = User.objects.filter(bodytype__overlap= user_type.bodytype_type).exclude(id=user_id)
+        # if get_user.count() > 2:
+        #     get_user2 = get_user.filter(personality__overlap=)
         serializer = UserProfileSerializer(get_user, many=True)
         return JsonResponse(serializer.data, safe=False)
 
