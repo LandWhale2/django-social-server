@@ -82,13 +82,14 @@ class User(models.Model):
     )
     image1 = models.ImageField(null= True, blank = True, upload_to = user_path)
     rating = models.IntegerField(null=True, blank=True)
-    
+    age = models.IntegerField(null=True, blank=True)
 
-    def age(self):
+    @property
+    def age_cal(self):
         import datetime
         return int((datetime.date.today() - self.birthday).days / 365.25)
     
-    age = property(age)
+    
 
     @property
     def like_rating(self):
@@ -169,8 +170,8 @@ class PersonType(models.Model):
         null = True,
         related_name='person_type_user',
     )
-    max_age = models.DateField(null=True, blank= True)
-    min_age = models.DateField(null=True, blank= True)
+    max_age_type = models.IntegerField(null=True, blank=True)
+    min_age_type = models.IntegerField(null=True, blank=True)
     height_max_type = models.IntegerField(null=True, blank=True)
     height_min_type = models.IntegerField(null=True, blank=True)
     personality_type = ArrayField(models.CharField(max_length=30), blank=True, null=True)

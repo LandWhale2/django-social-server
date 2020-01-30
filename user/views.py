@@ -19,6 +19,9 @@ class SignUp(APIView):
 
 
 
+from rest_framework.decorators import action
+import datetime
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -100,12 +103,10 @@ def get_matching_type(request, user_id=None):
     if request.method == 'GET':
         user_type = PersonType.objects.get(user=user_id)
         user = User.objects.get(pk = user_id)
-        print(user.birthday)
-        print(user.age)
-        age =date.today()-user.birthday
-        print(age.days/365.25)
-        print(user_type.bodytype_type)
-        get_user = User.objects.filter(bodytype__overlap= user_type.bodytype_type).exclude(id=user_id)
+        
+        get_user = User.objects.filter(birthday__year = 1996)
+        
+        # get_user = User.objects.filter(bodytype__overlap= user_type.bodytype_type).exclude(id=user_id)
         # if get_user.count() > 2:
         #     get_user2 = get_user.filter(personality__overlap=)
         serializer = UserProfileSerializer(get_user, many=True)

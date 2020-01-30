@@ -14,10 +14,25 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = '__all__'
         # extra_kwargs = ['photos']
+    
+
+    
+    
 
     def to_internal_value(self, data):
         #POST/PUT 과 같이 데이터변경이있을떄 데이터 저장하기 전에 핸들링 가능한 함수
         ret = super(UserSerializer, self).to_internal_value(data)
+        print(self.instance)
+        
+        print(ret)
+        try:
+            if ret['birthday']:
+                user = self.instance
+                user.age = user.age_cal
+                user.save()
+        except:
+            pass
+        
 
         # cipher = AESSipher()
         # ret['password'] = cipher.encrypt_str(ret['password'])
@@ -35,11 +50,11 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("이메일이 이미 존재합니다")
         return value
 
-    def validate_password(self, value):
-        #패스워드 8자 이하
-        if len(value) < 8:
-            raise serializers.ValidationError("패스워드는 최소 %s 자 이상이어야합니다 " % 8)
-        return value
+    # def validate_password(self, value):
+    #     #패스워드 8자 이하
+    #     if len(value) < 8:
+    #         raise serializers.ValidationError("패스워드는 최소 %s 자 이상이어야합니다 " % 8)
+    #     return value
 
     def create(self, validate_data):
         #데이터 저장할때 필요한 과정을 구현합니다
