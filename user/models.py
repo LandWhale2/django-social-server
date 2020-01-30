@@ -116,7 +116,8 @@ class User(models.Model):
         # like_users변수로 할당
         like_users = User.objects.filter(pk__in=like_pk_list)
         return like_users
-        
+    
+    
     
     
 
@@ -154,14 +155,17 @@ class Relation(models.Model):
 
 
 
+class PersonType(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        null = True,
+        related_name='person_type_user',
+    )
+    height_max_type = models.IntegerField(null=True, blank=True)
+    height_min_type = models.IntegerField(null=True, blank=True)
+    personality_type = ArrayField(models.CharField(max_length=30), blank=True, null=True)
+    bodytype_type = ArrayField(models.CharField(max_length=200), blank=True, null=True)
 
-
-
-
-
-# class UserPhoto(models.Model):
-#     user = models.ForeignKey(
-#             User, related_name='photos', on_delete=models.CASCADE
-#         )
-#     image = models.ImageField()
-#     date_added = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        ordering = ['-id']

@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
-from .serializers import UserSerializer,RelationSerializer, UserProfileSerializer
+from .serializers import UserSerializer,RelationSerializer, UserProfileSerializer, PersonTypeSerializer
 from rest_framework.response import Response
 from rest_framework import status, permissions
-from .models import User, Relation
+from .models import User, Relation, PersonType
 from rest_framework import viewsets
 
 
@@ -19,7 +19,7 @@ class SignUp(APIView):
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all().order_by('updated_ay')
+    queryset = User.objects.all()
     serializer_class = UserSerializer
 
 
@@ -27,6 +27,11 @@ class UserViewSet(viewsets.ModelViewSet):
 class RelationViewSet(viewsets.ModelViewSet):
     queryset = Relation.objects.all()
     serializer_class = RelationSerializer
+
+
+class PersonTypeViewSet(viewsets.ModelViewSet):
+    queryset = PersonType.objects.all()
+    serializer_class = PersonTypeSerializer
 
 
 from django.views.decorators.csrf import csrf_exempt
@@ -61,55 +66,39 @@ def get_top_rating(request):
 
 
 
-# from django.views.decorators.http import require_POST
-# from django.http import HttpResponse
-# try:
-#     from django.utils import simplejson as json
-# except ImportError:
-#     import json
-# from user import models
-# from django.views.decorators.csrf import csrf_exempt
 
 
+def get_matching_hobby(request, user_id=None):
+    if request.method == 'GET':
+        user = User.objects.get(pk=user_id)
+        hobby = user.hobby
+        get_user = User.objects.filter(hobby__overlap= hobby, gender=not user.gender).exclude(id=user_id)
+        get_user2 = User.objects.none()
 
-
-
-
-
-
-# @require_POST
-# @csrf_exempt
-# def like(request):
-#     if request.method == 'POST':
-
-#         ds = json.loads(request.body)
-#         from_user = ds['from_user']
-#         to_user = ds['to_user']
-#         relation_type = ds['type']
-
-#         if relation_type == 'f':
-#             print('rrrrrr')
-#             R = Relation(from_user=from_user, to_user=to_user, type='f')
-#             R.save()
-#             message = '팔로우'
-#         elif relation_type == 'b':
-#             R = Relation(from_user=from_user, to_user=to_user, type='b')
-#             R.save()
-#             message = '차단'
-#         else:
-#             message = '알 수 없는 입력'
+        if get_user.count() > 2:
+            get_user_2 = get_user.filter(hobby__contained_by= hobby)
+            serializer = UserProfileSerializer(get_user2, many=True)
+            if get_user_2.count() > 2:
+                get_user_3 = get_user_2.filter(hobby__contains = hobby)
+                serializer = UserProfileSerializer(get_user3, many=True)
+                if get_user_3.count() <= 2:
+                    serializer = UserProfileSerializer(get_user2, many=True)
+            else:
+                serializer = UserProfileSerializer(get_user, many=True)
+        else:
+            serializer = UserProfileSerializer(get_user, many=True)
         
-#         print('aaaaaa')
-#     context = {'like_count' : 'dd', 'message': message}
-#     response = HttpResponse(json.dumps(context), content_type='application/json')
-#     return response
+        
+        
+        
+        return JsonResponse(serializer.data, safe=False)
 
 
 
-
-
-
-
+# def get_matching_type(request, user_id=None):
+#     if request.method == 'GET':
+#         user = User.objects.get(pk=user_id)
+#         get_user = User.objects.filter(hobby__overlap= hobby, gender=not user.gender).exclude(id=user_id)
 
 
 

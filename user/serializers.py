@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Relation
+from .models import User, Relation, PersonType
 
 
 
@@ -83,3 +83,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         exclude = ('email','token',)
+
+
+
+class PersonTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PersonType
+        fields = '__all__'
