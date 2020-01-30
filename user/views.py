@@ -104,12 +104,13 @@ def get_matching_type(request, user_id=None):
         user_type = PersonType.objects.get(user=user_id)
         user = User.objects.get(pk = user_id)
         
-        get_user = User.objects.filter(birthday__year = 1996)
+        get_user_age = User.objects.filter(age__range = (user_type.min_age_type, user_type.max_age_type))
+        get_user_height = get_user_age.filter(height__range = (user_type.height_min_type, user_type.height_max_type))
         
         # get_user = User.objects.filter(bodytype__overlap= user_type.bodytype_type).exclude(id=user_id)
         # if get_user.count() > 2:
         #     get_user2 = get_user.filter(personality__overlap=)
-        serializer = UserProfileSerializer(get_user, many=True)
+        serializer = UserProfileSerializer(get_user_height, many=True)
         return JsonResponse(serializer.data, safe=False)
 
 
