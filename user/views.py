@@ -95,10 +95,14 @@ def get_matching_hobby(request, user_id=None):
 
 
 
-# def get_matching_type(request, user_id=None):
-#     if request.method == 'GET':
-#         user = User.objects.get(pk=user_id)
-#         get_user = User.objects.filter(hobby__overlap= hobby, gender=not user.gender).exclude(id=user_id)
+def get_matching_type(request, user_id=None):
+    if request.method == 'GET':
+        user_type = PersonType.objects.get(user=user_id)
+        user = User.objects.get(pk = user_id)
+        print(user_type.bodytype_type)
+        get_user = User.objects.filter(bodytype__overlap= user_type.bodytype_type).exclude(id=user_id)
+        serializer = UserProfileSerializer(get_user, many=True)
+        return JsonResponse(serializer.data, safe=False)
 
 
 
