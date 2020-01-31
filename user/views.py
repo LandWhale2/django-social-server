@@ -107,6 +107,7 @@ def get_matching_type(request, user_id=None):
         get_user_age = User.objects.filter(age__range = (user_type.min_age_type, user_type.max_age_type))
         get_user_height = get_user_age.filter(height__range = (user_type.height_min_type, user_type.height_max_type))
         
+        
         # get_user = User.objects.filter(bodytype__overlap= user_type.bodytype_type).exclude(id=user_id)
         # if get_user.count() > 2:
         #     get_user2 = get_user.filter(personality__overlap=)

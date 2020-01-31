@@ -1,6 +1,7 @@
 from django.db import models
 from user.models import User
 from django.views.decorators.csrf import csrf_exempt
+
 # from user.models import User
 
 # Create your models here.
@@ -33,12 +34,11 @@ class Story(models.Model):
         return self.likes.count()
 
 
+from django.utils import timezone
 
-# @csrf_exempt
-class TestModel(models.Model):
-    created = models.DateTimeField(auto_now_add= True)
-    content = models.CharField(max_length = 255, null = True)
-    
-    class Meta:
-        ordering = ['-created']
-   
+
+class StoryAlarm(models.Model):
+    message=models.CharField(max_length=100)
+    updated_ay = models.DateTimeField(auto_now= True)
+    nickname = models.ManyToManyField(User, blank=True,null= True ,related_name='nickname_alarm')
+    author = models.ForeignKey(User, on_delete= models.CASCADE, null = True, related_name='story_alarm')

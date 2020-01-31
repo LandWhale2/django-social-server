@@ -1,6 +1,8 @@
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 import chat.routing
+import story.routing
+
 
 
 
@@ -9,7 +11,8 @@ application = ProtocolTypeRouter({
     'websocket' : AuthMiddlewareStack(
         #URLRouter 로 연결, 소비자의 라우트 연결 HTTP path를 조사
         URLRouter(
-            chat.routing.websocket_urlpatterns
+            chat.routing.websocket_urlpatterns +
+            story.routing.websocket_urlpatterns
         )
     )
 })

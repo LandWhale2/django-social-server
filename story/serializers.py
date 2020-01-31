@@ -14,11 +14,3 @@ class StorySerializer(serializers.HyperlinkedModelSerializer):
 
 
 
-
-
-# @csrf_exempt
-class TestModelSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = models.TestModel
-        fields = '__all__'
