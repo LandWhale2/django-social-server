@@ -25,6 +25,7 @@ class Story(models.Model):
     author = models.ForeignKey(User, on_delete= models.CASCADE, null = True, related_name='storys')
     image = models.ImageField(null= True, blank = True, upload_to= image_path)
     likes = models.ManyToManyField(User, blank=True,null= True ,related_name='likes')
+    user = models.IntegerField(null=True, blank=True)
     
     class Meta:
         ordering = ['-created']

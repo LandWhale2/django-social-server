@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from . import models
 from . import serializers
+from user.models import User
 from rest_framework import viewsets
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse
@@ -18,6 +19,9 @@ class StoryViewset(viewsets.ModelViewSet):
     serializer_class = serializers.StorySerializer
 
 
+class StoryAlarmViewset(viewsets.ModelViewSet):
+    queryset = models.StoryAlarm.objects.all()
+    serializer_class = serializers.StoryAlarmSerializer
 
 
 
@@ -37,6 +41,36 @@ def like(request):
         else:
             story.likes.add(user)
             message = "이글을 좋아합니다"
+        
+
+        
+
+        if models.StoryAlarm.objects.filter(message = story.content).exists():
+            alarm = models.StoryAlarm.objects.get(message = story.content)
+            if alarm.nickname.filter(id = user).exists():
+                alarm.nickname.remove(user)
+                print('aa')
+            else:
+                alarm.nickname.add(user)
+                print('bb')
+        else:
+            user_get = User.objects.get(pk= user)
+            alarm_user_id = story.user
+            alarm = models.StoryAlarm.objects.create(
+                message = story.content,
+                author_id = alarm_user_id,
+            )
+            alarm.nickname.add(user)
+            print('qq')
+        
+        # try:
+        #     print('aa')
+        #     alarm = models.StoryAlarm.objects.get(message = story.content)
+        # except:
+        #     print('ss')
+
+        
+
 
     context = {'like_count' : story.total_likes, 'message': message}
     return HttpResponse(json.dumps(context), content_type='application/json')
