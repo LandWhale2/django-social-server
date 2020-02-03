@@ -5,28 +5,36 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from channels.layers import get_channel_layer
 from .models import StoryAlarm
+import datetime
 
-@receiver(post_save, sender=StoryAlarm)
-def announce_likes(sender, instance,**kwargs):
-    print('user_'+ str(instance.author.pk))
-    if kwargs['created']:
-        channel_layer=get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            'user_'+ str(instance.author.pk),
-            {
-                "type": "share_message",
-                "message": instance.message,
-            }
-        )
-    else:
-        channel_layer=get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            'user_'+ str(instance.author.pk),
-            {
-                "type": "share_message",
-                "message": instance.message,
-            }
-        )
+# @receiver(post_save, sender=StoryAlarm)
+# def announce_likes(sender, instance,**kwargs):
+#     print(instance.nickname.all()[0].nickname)
+    
+    
+    
+#     if kwargs['created']:
+#         channel_layer=get_channel_layer()
+#         async_to_sync(channel_layer.group_send)(
+#             'user_'+ str(instance.author.pk),
+#             {
+#                 "type": "share_message",
+#                 "message": instance.message,
+#                 "updated_ay" : str(instance.updated_ay),
+#                 # "nickname" : instance.nickname,
+#             }
+#         )
+#     else:
+#         channel_layer=get_channel_layer()
+#         async_to_sync(channel_layer.group_send)(
+#             'user_'+ str(instance.author.pk),
+#             {
+#                 "type": "share_message",
+#                 "message": instance.message,
+#                 "updated_ay" : str(instance.updated_ay),
+#                 # "nickname" : instance.nickname,
+#             }
+#         )
         
 
 
@@ -36,7 +44,6 @@ class UserConsumer(WebsocketConsumer):
         
         self.groupname= self.scope['url_route']['kwargs']['username']
         self.alarm_name = 'user_' + self.groupname
-        print(self.alarm_name)
         self.accept()
 
         async_to_sync(self.channel_layer.group_add)(
@@ -58,15 +65,21 @@ class UserConsumer(WebsocketConsumer):
             self.alarm_name,
             {
                 'type': 'share_message',
-                'message': message
+                'message': message,
             }
         )
 
     # Receive message from room group
     def share_message(self, event):
         message = event['message']
-
+        updated_ay = event['updated_ay']
+        nickname = event['nickname']
+        like_counts = event['like_counts']
+        
         # Send message to WebSocket
         self.send(text_data=json.dumps({
-            'message': message
+            'message': message,
+            "updated_ay" : updated_ay,
+            "nickname" : nickname,
+            "like_counts" :like_counts
         }))
