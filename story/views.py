@@ -24,6 +24,7 @@ class StoryAlarmViewset(viewsets.ModelViewSet):
     serializer_class = serializers.StoryAlarmSerializer
 
 
+import datetime
 
 @require_POST
 @csrf_exempt
@@ -49,10 +50,12 @@ def like(request):
             alarm = models.StoryAlarm.objects.get(message = story.content)
             if alarm.nickname.filter(id = user).exists():
                 alarm.nickname.remove(user)
-                print('aa')
+                alarm.updated_ay = datetime.datetime.now()
+                
             else:
                 alarm.nickname.add(user)
-                print('bb')
+                alarm.updated_ay = datetime.datetime.now()
+                
         else:
             user_get = User.objects.get(pk= user)
             alarm_user_id = story.user
@@ -61,13 +64,8 @@ def like(request):
                 author_id = alarm_user_id,
             )
             alarm.nickname.add(user)
-            print('qq')
         
-        # try:
-        #     print('aa')
-        #     alarm = models.StoryAlarm.objects.get(message = story.content)
-        # except:
-        #     print('ss')
+        alarm.save()
 
         
 

@@ -22,4 +22,4 @@ class StoryAlarmSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.StoryAlarm
-        fields = ('message', 'updated_ay', 'nickname')
+        fields = '__all__'
