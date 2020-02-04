@@ -58,8 +58,6 @@ def like(request):
         if models.StoryAlarm.objects.filter(message = story_message).exists():
 
             alarm = models.StoryAlarm.objects.get(message = story_message)
-
-            
             try:
                 #알림 모델에 해당 유저가 존재하는지 확인함
                 if alarm.nickname.filter(id = user).exists():
@@ -122,3 +120,15 @@ def like(request):
 
 
 
+from rest_framework.parsers import JSONParser
+from django.http.response import JsonResponse
+
+
+def StoryAlarmList(request, user_id=None):
+    if request.method == 'GET':
+        
+        get_alarm = models.StoryAlarm.objects.filter(author = user_id)
+        
+
+        serializer = serializers.StoryAlarmSerializer(get_alarm, many=True)
+        return JsonResponse(serializer.data, safe=False)
