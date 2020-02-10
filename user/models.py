@@ -135,10 +135,12 @@ class Relation(models.Model):
     RELATION_TYPE_LIKE = 'l'
     RELATION_TYPE_BLOCK = 'b'
     RELATION_TYPE_HATE = 'h'
+    RELATION_TYPE_CHAT = 'c'
     CHOICES_TYPE = (
         (RELATION_TYPE_LIKE, '좋아요'),
         (RELATION_TYPE_BLOCK, '차단'),
         (RELATION_TYPE_HATE, '싫어요'),
+        (RELATION_TYPE_CHAT, '채팅'),
     )
     from_user = models.ForeignKey(
         User,
@@ -177,5 +179,18 @@ class PersonType(models.Model):
     personality_type = ArrayField(models.CharField(max_length=30), blank=True, null=True)
     bodytype_type = ArrayField(models.CharField(max_length=200), blank=True, null=True)
 
+    class Meta:
+        ordering = ['-id']
+
+
+
+class ChattingList(models.Model):
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        null = True,
+        related_name='chatting_list',
+    )
+    chttingwith = models.ManyToManyField(User, blank=True,null= True ,related_name='chattingwith')
     class Meta:
         ordering = ['-id']

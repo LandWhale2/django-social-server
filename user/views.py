@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
-from .serializers import UserSerializer,RelationSerializer, UserProfileSerializer, PersonTypeSerializer
+from .serializers import UserSerializer,RelationSerializer, UserProfileSerializer, PersonTypeSerializer,ChatListSerializer
 from rest_framework.response import Response
 from rest_framework import status, permissions
-from .models import User, Relation, PersonType
+from .models import User, Relation, PersonType, ChattingList
 from rest_framework import viewsets
 from datetime import date
 
@@ -23,7 +23,7 @@ from rest_framework.decorators import action
 import datetime
 
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
+    queryset = User.objects.all().order_by('-created_at')
     serializer_class = UserSerializer
 
 
@@ -43,6 +43,28 @@ from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from django.db.models import Avg, Max
 
+
+@csrf_exempt
+def Sign(request):
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        email = data['email']
+        token = data['token']
+        if User.objects.filter(email = email, token = token).exists():
+            user = User.objects.get(email = email)
+            
+            serializer = UserSerializer(user)
+            return JsonResponse(serializer.data, safe=False)
+        user = User.objects.create(
+            email = email,
+            token = token
+        )
+        user.save()
+        serializer = UserSerializer(user)
+        return JsonResponse(serializer.data, safe=False)
+
+
+
 @csrf_exempt
 def relation_list(request, to_user=None, relation_type=None):
     if request.method == 'GET':
@@ -54,6 +76,31 @@ def relation_list(request, to_user=None, relation_type=None):
         user = User.objects.get(pk=data['to_user'])
         user.rating = user.like_rating
         user.save()
+        if data['relation_type'] == "l":
+            if Relation.objects.filter(to_user= data['to_user'], from_user = data['from_user']).exists():
+                #이미 좋아요 한 유저, 취소함
+                Relation.objects.filter(to_user= data['to_user'], from_user = data['from_user']).delete()
+            else:
+                if Relation.objects.filter(relation_type='l', to_user= data['from_user'], from_user=data['to_user']).exists():
+                # 둘다 좋아하면 채팅
+                    if ChattingList.objects.filter(author = data['to_user']).exists():
+                        chatting_user = ChattingList.objects.get(author = data['to_user'])
+                        chatting_user.chttingwith.add(data['from_user'])
+                    else:
+                        get_user = User.objects.get(pk =data['to_user'])
+                        ChattingList.objects.create(
+                            author=get_user
+                        ).chttingwith.add(data['from_user'])
+
+                    if ChattingList.objects.filter(author = data['from_user']).exists():
+                        chatting_user = ChattingList.objects.get(author = data['from_user'])
+                        chatting_user.chttingwith.add(data['to_user'])
+                    else:
+                        get_user = User.objects.get(pk =data['from_user'])
+                        ChattingList.objects.create(
+                            author=get_user
+                        ).chttingwith.add(data['to_user'])
+
         serializer = RelationSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -114,6 +161,13 @@ def get_matching_type(request, user_id=None):
         serializer = UserProfileSerializer(get_user_height, many=True)
         return JsonResponse(serializer.data, safe=False)
 
+
+def get_chatting_list(request, user_id=None):
+    if request.method == 'GET':
+        get_chatting_list = ChattingList.objects.filter(author = user_id)
+
+        serializer = ChatListSerializer(get_chatting_list, many=True)
+        return JsonResponse(serializer.data, safe=False)
 
 
 

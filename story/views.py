@@ -15,8 +15,12 @@ except ImportError:
 
 
 class StoryViewset(viewsets.ModelViewSet):
-    queryset = models.Story.objects.all()
     serializer_class = serializers.StorySerializer
+
+    def get_queryset(self):
+        user = models.User.objects.get(pk = self.kwargs['user_pk'])
+        story = models.Story.objects.filter(gender = not user.gender)
+        return story
 
 
 class StoryAlarmViewset(viewsets.ModelViewSet):

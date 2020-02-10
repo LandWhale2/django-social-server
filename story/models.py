@@ -26,6 +26,8 @@ class Story(models.Model):
     image = models.ImageField(null= True, blank = True, upload_to= image_path)
     likes = models.ManyToManyField(User, blank=True,null= True ,related_name='likes')
     user = models.IntegerField(null=True, blank=True)
+    gender = models.BooleanField(default= False)
+    
     
     class Meta:
         ordering = ['-created']

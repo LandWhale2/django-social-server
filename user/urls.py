@@ -14,12 +14,13 @@ router.register(r'persontype/<int:user>', views.PersonTypeViewSet)
 
 
 urlpatterns = [
-    path('signup', views.SignUp.as_view(), name='signup'),
+    path('sign', views.Sign, name='sign'),
     path('relation/<int:to_user>/<str:relation_type>', views.relation_list, name='relations-list'),
     path('relation', views.relation_list, name='relations'),
     path('toprating', views.get_top_rating, name='toprating'),
     path('hobbymatching/<int:user_id>', views.get_matching_hobby, name='hobbymatch'),
     path('typematching/<int:user_id>', views.get_matching_type, name='typematchinh'),
+    path('chattinglist/<int:user_id>', views.get_chatting_list, name='chttinglist'),
     # path('relation', views.RelationViewSet, name='relations'),
     url(r'^', include(router.urls)),
 ]

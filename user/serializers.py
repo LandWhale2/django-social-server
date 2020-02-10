@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Relation, PersonType
+from .models import User, Relation, PersonType, ChattingList
 
 
 
@@ -22,20 +22,17 @@ class UserSerializer(serializers.ModelSerializer):
     def to_internal_value(self, data):
         #POST/PUT 과 같이 데이터변경이있을떄 데이터 저장하기 전에 핸들링 가능한 함수
         ret = super(UserSerializer, self).to_internal_value(data)
-        print(self.instance)
         
-        print(ret)
-        try:
-            if ret['birthday']:
-                user = self.instance
-                user.age = user.age_cal
-                user.save()
-        except:
-            pass
+        # print(ret)
         
-
-        # cipher = AESSipher()
-        # ret['password'] = cipher.encrypt_str(ret['password'])
+        # if 'birthday' in ret:
+        #     print('qqqq')
+        #     user = self.instance
+        #     user.age = user.age_cal
+        #     user.save()
+        # else:
+        #     print('aaaaa')
+    
 
         return ret
     
@@ -104,4 +101,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class PersonTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PersonType
+        fields = '__all__'
+
+
+class ChatListSerializer(serializers.ModelSerializer):
+    chttingwith = UserProfileSerializer(many=True,required=False)
+
+    class Meta:
+        model = ChattingList
         fields = '__all__'

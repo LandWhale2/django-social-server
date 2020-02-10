@@ -13,7 +13,7 @@ class StorySerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = models.Story
-        fields = ('content','image', 'created', 'email', 'id', 'likes','user')
+        fields = ('content','image', 'created', 'email', 'id', 'likes','user', 'gender')
 
 
 
