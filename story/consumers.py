@@ -38,6 +38,11 @@ import datetime
         
 
 
+
+
+from django.core.serializers.json import DjangoJSONEncoder
+
+
 class UserConsumer(WebsocketConsumer):
 
     def connect(self):
@@ -45,6 +50,7 @@ class UserConsumer(WebsocketConsumer):
         self.groupname= self.scope['url_route']['kwargs']['username']
         self.alarm_name = 'user_' + self.groupname
         self.accept()
+        
 
         async_to_sync(self.channel_layer.group_add)(
             self.alarm_name,
@@ -60,6 +66,7 @@ class UserConsumer(WebsocketConsumer):
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
+        
 
         async_to_sync(self.channel_layer.group_send)(
             self.alarm_name,
@@ -76,6 +83,8 @@ class UserConsumer(WebsocketConsumer):
         nickname = event['nickname']
         like_counts = event['like_counts']
         
+        
+
         # Send message to WebSocket
         self.send(text_data=json.dumps({
             'message': message,
@@ -83,3 +92,11 @@ class UserConsumer(WebsocketConsumer):
             "nickname" : nickname,
             "like_counts" :like_counts
         }))
+
+    def user_list(self, event):
+        user_list = event['userlist']
+        self.send(text_data=json.dumps({
+            "user_list": user_list
+        }))
+
+

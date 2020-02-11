@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:3.6
 RUN apt update
 RUN apt-get install  postgresql-contrib -y
 RUN apt-get install musl-dev -y

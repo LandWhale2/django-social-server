@@ -4,7 +4,7 @@ services:
   db:
     image: postgres
   redis:
-    image: redis
+    image: "redis:alpine"
     ports:
       - "6379:6379"
     command:
@@ -22,3 +22,19 @@ services:
       - .:/code
     depends_on:
       - db
+  celery:
+    build: .
+    command: celery -A social worker -l info
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+      - redis
+  celery-beat:
+    build: .
+    command: celery -A social beat -l info
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+      - redis
