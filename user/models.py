@@ -83,6 +83,9 @@ class User(models.Model):
     image1 = models.ImageField(null= True, blank = True, upload_to = user_path)
     rating = models.IntegerField(null=True, blank=True)
     age = models.IntegerField(null=True, blank=True)
+    longitude = models.FloatField(null=True)
+    latitude = models.FloatField(null=True)
+    fcmtoken = models.CharField(max_length= 255, null = True)
 
     @property
     def age_cal(self):

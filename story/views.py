@@ -28,6 +28,36 @@ class StoryAlarmViewset(viewsets.ModelViewSet):
     serializer_class = serializers.StoryAlarmSerializer
 
 
+import requests
+import json
+
+
+def send_fcm_notification(ids, title, body):
+    # fcm 푸시 메세지 요청 주소
+    url = 'https://fcm.googleapis.com/fcm/send'
+    
+    # 인증 정보(서버 키)를 헤더에 담아 전달
+    headers = { 
+        'Authorization': 'key=AAAACekWIbs:APA91bG-VeoSEYHSLX6jSP7_RZJRgcNj4MmgFOZq6RBhG1XAukDGbfVkFhKsyueOjuQ80_rO0hp0m_W8a3dr2LQpdOXLwhyLl4EZm9Uw8LxGIZG1jlyeG3-jvyOq5hTIIdEPF7eR3yjk',
+        'Content-Type': 'application/json; UTF-8',
+    }
+    
+
+    # 보낼 내용과 대상을 지정
+    content = {
+        'to': ids,
+        'notification': {
+            'title': title,
+            'body': body
+        }
+    }
+
+    # json 파싱 후 requests 모듈로 FCM 서버에 요청
+    response = requests.post(url, data=json.dumps(content), headers=headers)
+
+
+
+
 import datetime
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
@@ -45,9 +75,12 @@ def like(request):
         story = models.Story.objects.get(id = postid)
         story_user_id = story.user
         story_message = story.content
+        story_user_get = User.objects.get(id = story_user_id)
+        stroy_user_fcmtoken = story_user_get.fcmtoken
         alarm_name = 'user_' + str(story_user_id)
         user_get = User.objects.get(pk= user)
         peer_nickname = user_get.nickname
+
         
         
         if story.likes.filter(id = user).exists():
@@ -86,6 +119,7 @@ def like(request):
                         "like_counts": alarm.nickname.count(),
                     }
                 )
+                send_fcm_notification(stroy_user_fcmtoken, '누카', '누군가가 스토리에 좋아요를 눌렀습니다')
                 alarm.save()
 
                 
@@ -109,6 +143,8 @@ def like(request):
                     "like_counts" : 1
                 }
             )
+            
+            send_fcm_notification(stroy_user_fcmtoken, '누카', '누군가가 스토리에 좋아요를 눌렀습니다')
             
 
 
