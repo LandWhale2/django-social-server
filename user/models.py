@@ -89,9 +89,12 @@ class User(models.Model):
 
     def __str__(self):
         if self.active:
-            return '활성화 된 유저'
+            return '[활성화 된 유저]:[{email}]'.format(**self.as_dict())
         else:
-            return '비활성화 된 유저'
+            return '[비활성화 된 유저][{email}]'.format(**self.as_dict())
+    
+    def as_dict(self):
+        return {'email': self.email}
 
     @property
     def age_cal(self):

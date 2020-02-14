@@ -28,13 +28,19 @@ class Story(models.Model):
     user = models.IntegerField(null=True, blank=True)
     gender = models.BooleanField(default= False)
     
-    
+    def __str__(self):
+        return '[{email}] : {content}'.format(**self.as_dict())
+
+
     class Meta:
         ordering = ['-created']
     
     @property
     def total_likes(self):
         return self.likes.count()
+
+    def as_dict(self):
+        return {'email': self.email, 'content': self.content}
 
 
 from django.utils import timezone
@@ -45,3 +51,10 @@ class StoryAlarm(models.Model):
     updated_ay = models.DateTimeField(auto_now= True)
     nickname = models.ManyToManyField(User, blank=True,null= True ,related_name='nickname_alarm')
     author = models.ForeignKey(User, on_delete= models.CASCADE, null = True, related_name='story_alarm')
+
+    def __str__(self):
+        return '[{author}] : {message}'.format(**self.as_dict())
+
+    
+    def as_dict(self):
+        return {'author': self.author, 'message': self.message}
