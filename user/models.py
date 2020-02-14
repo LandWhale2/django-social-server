@@ -87,6 +87,12 @@ class User(models.Model):
     latitude = models.FloatField(null=True)
     fcmtoken = models.CharField(max_length= 255, null = True)
 
+    def __str__(self):
+        if self.active:
+            return '활성화 된 유저'
+        else:
+            return '비활성화 된 유저'
+
     @property
     def age_cal(self):
         import datetime

@@ -173,6 +173,9 @@ def get_chatting_list(request, user_id=None):
 
 
 
+
+
+
 # def delete(self, *args, **kwargs):
 #     # You have to prepare what you need before delete the model
 #     storage, path = self.image.storage, self.image.path
