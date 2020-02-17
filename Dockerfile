@@ -10,10 +10,11 @@ RUN pip3 install psycopg2
 RUN pip3 install djangorestframework
 RUN pip3 install markdown
 RUN pip3 install django-filter
-
+RUN apt-get install -y binutils libproj-dev gdal-bin
 
 # Delete build dependencies 
 # RUN apk del .build-deps
+
 ENV PYTHONUNBUFFERED 1
 RUN mkdir /code
 WORKDIR /code

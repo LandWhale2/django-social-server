@@ -53,6 +53,7 @@ def rating_save():
 
 
 
+
 class User(models.Model):
     class Meta:
         db_table = "users"
@@ -101,7 +102,10 @@ class User(models.Model):
         import datetime
         return int((datetime.date.today() - self.birthday).days / 365.25)
     
+
     
+    
+
 
     @property
     def like_rating(self):
