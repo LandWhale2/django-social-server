@@ -52,7 +52,7 @@ def rating_save():
     return 3
 
 
-
+from django.contrib.gis.db import models
 
 class User(models.Model):
     class Meta:
@@ -86,7 +86,9 @@ class User(models.Model):
     age = models.IntegerField(null=True, blank=True)
     longitude = models.FloatField(null=True)
     latitude = models.FloatField(null=True)
+    location = models.PointField(null=True, srid=4326)
     fcmtoken = models.CharField(max_length= 255, null = True)
+    points = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         if self.active:

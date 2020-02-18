@@ -109,9 +109,11 @@ def relation_list(request, to_user=None, relation_type=None):
 
 
 
-def get_top_rating(request):
+def get_top_rating(request, user_id = None):
     if request.method == 'GET':
-        get_user = User.objects.all().order_by('-rating')[:10]
+        get_user = User.objects.get(pk = user_id)
+        gender = get_user.gender
+        get_user = User.objects.filter(gender = not gender).order_by('-rating')[:10]
         serializer = UserProfileSerializer(get_user, many=True)
         return JsonResponse(serializer.data, safe=False)
 
@@ -170,6 +172,24 @@ def get_chatting_list(request, user_id=None):
         return JsonResponse(serializer.data, safe=False)
 
 
+from django.contrib.gis.geos import *
+from django.contrib.gis.measure import D
+from django.contrib.gis.db.models.functions import Distance
+
+def get_location_type_list(request, user_id = None):
+    if request.method == 'GET':
+        distance = 5000
+        user_get = User.objects.get(pk= user_id)
+        longitude = user_get.longitude
+        latitude = user_get.latitude
+        gender = user_get.gender
+        
+        ref_location = Point(longitude, latitude)
+
+        res = User.objects.filter(location__distance_lte=(ref_location, D(m=distance)), gender= not gender).order_by('location')
+        
+        serializer = UserProfileSerializer(res, many=True)
+        return JsonResponse(serializer.data, safe=False)
 
 
 
