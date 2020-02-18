@@ -22,6 +22,7 @@ urlpatterns = [
     path('typematching/<int:user_id>', views.get_matching_type, name='typematchinh'),
     path('chattinglist/<int:user_id>', views.get_chatting_list, name='chttinglist'),
     path('locationtype/<int:user_id>', views.get_location_type_list, name='locationtype'),
+    path('randompeople/<int:user_id>', views.random_people_list, name='randompeople'),
     # path('relation', views.RelationViewSet, name='relations'),
     url(r'^', include(router.urls)),
 ]

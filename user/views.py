@@ -193,6 +193,16 @@ def get_location_type_list(request, user_id = None):
 
 
 
+def random_people_list(request, user_id=None):
+    if request.method == 'GET':
+        user_get = User.objects.get(pk= user_id)
+        gender = user_get.gender
+
+        user_list = User.objects.filter(gender= not gender).order_by('?')[:5]
+        
+        serializer = UserProfileSerializer(user_list, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
 
 
 
