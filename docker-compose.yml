@@ -9,6 +9,8 @@ services:
       - "6379:6379"
     command:
       - redis-server
+    volumes:
+      - .:/code
   django:
     build: .
     ports:
