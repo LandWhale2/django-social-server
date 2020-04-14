@@ -3,27 +3,34 @@ version: '3'
 services:
   db:
     image: mdillon/postgis
+    ports:
+      - "5432:5432"
   redis:
-    image: "redis:alpine"
+    image: redis:alpine
     ports:
       - "6379:6379"
     command:
       - redis-server
     volumes:
       - .:/code
-  django:
-    build: .
-    ports:
-      - "8000:8000"
-    command:
-      - python3
-      - manage.py
-      - runserver
-      - 0.0.0.0:8000
+  web:
+    build:
+      context: ./
+      dockerfile : Dockerfile
+    command: gunicorn social.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - .:/code
     depends_on:
       - db
+  nginx:
+    image: nginx:latest
+    volumes:
+     - .:/code
+     - ./config/nginx:/etc/nginx/conf.d
+    ports:
+      - 80:80
+    depends_on:
+      - web
   celery:
     build: .
     command: celery -A social worker -l info
@@ -40,3 +47,4 @@ services:
     depends_on:
       - db
       - redis
+

@@ -26,7 +26,7 @@ SECRET_KEY = 'fs$6c&^g^tj)irf#44tp2g73$&-_+p%effroq1t3&g7(6@f2ig'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*', 'web']
 
 
 # Application definition
